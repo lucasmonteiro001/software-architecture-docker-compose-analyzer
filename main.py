@@ -40,13 +40,18 @@ print get_sum(df_file, "#networks")
 print get_mean(df_file, "#networks")
 print get_distribution(df_file, "#networks")
 
-exit()
+# exit()
 print "\n\n"
 print df_service
-# print get_sum(df_service, "#services")
-# print get_mean(df_service, "#services")
-# print get_distribution(df_service, "version_number")
-
+print get_sum(df_service, "#ports")
+print get_mean(df_service, "#ports")
+print get_distribution(df_service, "#ports")
+print get_sum(df_service, "#depends_on")
+print get_mean(df_service, "#depends_on")
+print get_distribution(df_service, "#depends_on")
+print get_sum(df_service, "#volumes")
+print get_mean(df_service, "#volumes")
+print get_distribution(df_service, "#volumes")
 
 
 # print "\n\n"
