@@ -2,9 +2,12 @@ import pandas as pd
 
 from file_util import FileUtil
 from metrics_util import MetricsUtil
+import time
+
+init = time.time()
 
 # read the list of files
-file_list = FileUtil.get_files_from_directory("old_input")
+file_list = FileUtil.get_files_from_directory("huge-dataset")
 
 file_data, service_data = MetricsUtil.get_metrics(file_list)
 
@@ -31,7 +34,7 @@ def get_distribution(data_frame, key):
 
 
 print "\n\n"
-print df_file
+# print df_file
 print get_sum(df_file, "#services")
 print get_mean(df_file, "#services")
 print get_distribution(df_file, "#services")
@@ -42,7 +45,7 @@ print get_distribution(df_file, "#networks")
 
 # exit()
 print "\n\n"
-print df_service
+# print df_service
 print get_sum(df_service, "#ports")
 print get_mean(df_service, "#ports")
 print get_distribution(df_service, "#ports")
@@ -53,6 +56,10 @@ print get_sum(df_service, "#volumes")
 print get_mean(df_service, "#volumes")
 print get_distribution(df_service, "#volumes")
 
+
+end = time.time()
+
+print "\n\nTime in seconds: {}".format(end - init)
 
 # print "\n\n"
 # # print df_service
