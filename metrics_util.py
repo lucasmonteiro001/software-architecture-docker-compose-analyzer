@@ -1,6 +1,6 @@
 import pandas as pd
 import yaml
-import six
+
 
 class MetricsUtil(object):
     @staticmethod
@@ -21,17 +21,20 @@ class MetricsUtil(object):
             if yaml_file.get("services"):
                 services = yaml_file.get("services")
                 version_number = yaml_file.get("version")
+
+                if version_number > 0:
+                    version_number = int(float(version_number))
+
+                number_of_networks = len(yaml_file.get("networks") or [])
             else:
                 services = yaml_file
-                version_number = None
+                version_number = 0
+                number_of_networks = 0
 
             number_of_services = len(services)
 
-            # TODO version
-            # TODO networks
-
-            file_data["f: ({})".format(cont_file)] = pd.Series([number_of_services, version_number],
-                                                               ["#services", "versionNumber"])
+            file_data["f: ({})".format(cont_file)] = pd.Series([number_of_services, version_number, number_of_networks],
+                                                               ["#services", "version_number", "#networks"])
 
             # loop through services
             for s in services:
