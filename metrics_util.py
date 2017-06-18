@@ -54,32 +54,50 @@ class MetricsUtil(object):
                 # loop through services
                 for s in services:
 
-                    # if the file has no service key
-                    if yaml_file.get(s):
-                        service = yaml_file.get(s)
-                    else:
-                        service = services[s]
+                    # remove data that was stored for unprocessed file
+                    try:
+                        # if the file has no service key
+                        if yaml_file.get(s):
+                            service = yaml_file.get(s)
+                        else:
+                            service = services[s]
 
-                    ports = service.get("ports") or []
-                    number_of_ports = len(ports)
+                        ports = service.get("ports") or []
+                        number_of_ports = len(ports)
 
-                    depends_on = service.get("depends_on") or []
-                    number_of_depends_on = len(depends_on)
+                        depends_on = service.get("depends_on") or []
+                        number_of_depends_on = len(depends_on)
 
-                    volumes = service.get("volumes") or []
-                    number_of_volumes = len(volumes)
+                        volumes = service.get("volumes") or []
+                        number_of_volumes = len(volumes)
 
-                    service_data["s: ({})".format(cont_service)] = pd.Series(
-                        [number_of_ports, number_of_depends_on, number_of_volumes],
-                        ["#ports", "#depends_on", "#volumes"])
+                        service_data["s: ({})".format(cont_service)] = pd.Series(
+                            [number_of_ports, number_of_depends_on, number_of_volumes],
+                            ["#ports", "#depends_on", "#volumes"])
 
-                    cont_service += 1
+                        cont_service += 1
+
+                    except Exception:
+                        # remove data that was stored for unprocessed file
+                        try:
+                            del service_data["s: ({})".format(cont_service)]
+                        except Exception:
+                            pass
+
+                        raise "error"
 
                 cont_file += 1
-                
+
             except Exception:
                 print "error: " + file_path
                 errors.append(file_path)
+
+                # remove data that was stored for unprocessed file
+                try:
+                    del file_data["f: ({})".format(cont_file)]
+
+                except Exception:
+                    pass
 
         # save error logs
         with open("errors.txt", "w") as f:
