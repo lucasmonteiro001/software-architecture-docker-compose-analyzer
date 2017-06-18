@@ -1,6 +1,6 @@
 import pandas as pd
 import yaml
-
+import six
 
 class MetricsUtil(object):
     @staticmethod
@@ -18,35 +18,45 @@ class MetricsUtil(object):
                 yaml_file = yaml.load(stream)
 
             # if there is any service
-            if yaml_file.get("service"):
-                print "existe servico"
+            if yaml_file.get("services"):
+                services = yaml_file.get("services")
+                version_number = yaml_file.get("version")
             else:
-                number_of_services = len(yaml_file)
+                services = yaml_file
+                version_number = None
 
-                # TODO version
-                # TODO networks
+            number_of_services = len(services)
 
-                file_data["f: ({})".format(cont_file)] = pd.Series([number_of_services], ["#services"])
+            # TODO version
+            # TODO networks
 
-                # loop through services
-                for service_name in yaml_file:
-                    service = yaml_file.get(service_name)
+            file_data["f: ({})".format(cont_file)] = pd.Series([number_of_services, version_number],
+                                                               ["#services", "versionNumber"])
 
-                    ports = service.get("ports") or []
-                    number_of_ports = len(ports)
+            # loop through services
+            for s in services:
 
-                    depends_on = service.get("depends_on") or []
-                    number_of_depends_on = len(depends_on)
+                # if the file has no service key
+                if yaml_file.get(s):
+                    service = yaml_file.get(s)
+                else:
+                    service = services[s]
 
-                    volumes = service.get("volumes") or []
-                    number_of_volumes = len(volumes)
+                ports = service.get("ports") or []
+                number_of_ports = len(ports)
 
-                    service_data["s: ({})".format(cont_service)] = pd.Series(
-                        [number_of_ports, number_of_depends_on, number_of_volumes],
-                        ["#ports", "#depends_on", "#volumes"])
+                depends_on = service.get("depends_on") or []
+                number_of_depends_on = len(depends_on)
 
-                    cont_service += 1
+                volumes = service.get("volumes") or []
+                number_of_volumes = len(volumes)
 
-                cont_file += 1
+                service_data["s: ({})".format(cont_service)] = pd.Series(
+                    [number_of_ports, number_of_depends_on, number_of_volumes],
+                    ["#ports", "#depends_on", "#volumes"])
+
+                cont_service += 1
+
+            cont_file += 1
 
         return file_data, service_data

@@ -4,7 +4,7 @@ from file_util import FileUtil
 from metrics_util import MetricsUtil
 
 # read the list of files
-file_list = FileUtil.get_files_from_directory("input")
+file_list = FileUtil.get_files_from_directory("old_input")
 
 file_data, service_data = MetricsUtil.get_metrics(file_list)
 
@@ -21,15 +21,16 @@ def get_mean(data_frame):
 
 
 print "\n\n"
-# print df_file
-df_file_sum = get_sum(df_file)
-df_file_mean = get_mean(df_file)
-print df_file_sum
-print df_file_mean
+print df_file
+# df_file_sum = get_sum(df_file)
+# df_file_mean = get_mean(df_file)
+# print df_file_sum
+# print df_file_mean
+# print df_file.iloc(0)
 
-print "\n\n"
-# print df_service
-df_service_sum = get_sum(df_service)
-df_service_mean = get_mean(df_service)
-print df_service_sum
-print df_service_mean
+# print "\n\n"
+# # print df_service
+# df_service_sum = get_sum(df_service)
+# df_service_mean = get_mean(df_service)
+# print df_service_sum
+# print df_service_mean
