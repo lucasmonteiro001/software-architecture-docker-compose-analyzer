@@ -20,7 +20,7 @@ class MetricsUtil(object):
         for file_path in file_list:
 
             try:
-                print cont_max
+                # print cont_max
                 # print "\t" + file_path
 
                 if cont_max >= MAX:
