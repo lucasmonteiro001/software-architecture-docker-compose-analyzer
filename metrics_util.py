@@ -1,12 +1,23 @@
 import pandas as pd
 import yaml
+from collections import namedtuple
 
 MAX = 1000000
+
+_Max_service = namedtuple('Services', ['repo', 'num_servicos'])
+_Max_networks = namedtuple('Networks', ['repo', 'num_redes'])
+_Max_port = namedtuple('Ports', ['repo', 'num_portas'])
+_Max_depends = namedtuple('Dependencies', ['repo', 'num_dependencias'])
 
 
 class MetricsUtil(object):
     @staticmethod
     def get_metrics(file_list):
+
+        max_service = _Max_service(repo=None, num_servicos=0)
+        max_redes = _Max_networks(repo=None, num_redes=0)
+        max_ports = _Max_port(repo=None, num_portas=0)
+        max_dependencies = _Max_depends(repo=None, num_dependencias=0)
 
         errors = list()
         file_data = dict()
@@ -51,6 +62,12 @@ class MetricsUtil(object):
                     [number_of_services, version_number, number_of_networks],
                     ["#services", "version_number", "#networks"])
 
+                if len(services) > max_service.num_servicos:
+                    max_service = _Max_service(repo=file_path, num_servicos=len(services))
+
+                if number_of_networks > max_redes.num_redes:
+                    max_redes = _Max_networks(repo=file_path, num_redes=number_of_networks)
+
                 # loop through services
                 for s in services:
 
@@ -71,6 +88,12 @@ class MetricsUtil(object):
                         volumes = service.get("volumes") or []
                         number_of_volumes = len(volumes)
 
+                        if number_of_ports > max_ports.num_portas:
+                            max_ports = _Max_port(repo=file_path, num_portas=number_of_ports)
+
+                        if number_of_depends_on > max_dependencies.num_dependencias:
+                            max_dependencies = _Max_depends(repo=file_path, num_dependencias=number_of_depends_on)
+
                         service_data["s: ({})".format(cont_service)] = pd.Series(
                             [number_of_ports, number_of_depends_on, number_of_volumes],
                             ["#ports", "#depends_on", "#volumes"])
@@ -89,8 +112,8 @@ class MetricsUtil(object):
                 cont_file += 1
 
             except Exception:
-                print "error: " + file_path
-                errors.append(file_path)
+                # print "error: " + file_path
+                # errors.append(file_path)
 
                 # remove data that was stored for unprocessed file
                 try:
@@ -98,6 +121,12 @@ class MetricsUtil(object):
 
                 except Exception:
                     pass
+
+
+        print max_service
+        print max_redes
+        print max_ports
+        print max_dependencies
 
         # save error logs
         with open("errors.txt", "w") as f:
